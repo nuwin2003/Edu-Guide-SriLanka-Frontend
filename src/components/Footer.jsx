@@ -75,9 +75,9 @@ const Footer = () => {
                                 sx={{mb: 1, cursor: 'pointer', fontSize: 14, fontWeight: 500}}>
                         Universities
                     </Typography>
-                    <Typography onClick={() => navigate('courses')} color="inherit"
+                    <Typography onClick={() => navigate('testimonials')} color="inherit"
                                 sx={{mb: 1, cursor: 'pointer', fontSize: 14, fontWeight: 500}}>
-                        Courses
+                        Testimonials
                     </Typography>
                     <Typography onClick={() => navigate('contact-us')} color="inherit"
                                 sx={{mb: 1, cursor: 'pointer', fontSize: 14, fontWeight: 500}}>
