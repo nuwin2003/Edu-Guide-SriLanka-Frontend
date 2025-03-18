@@ -9,20 +9,17 @@ import {
     List,
     ListItem,
     ListItemText,
-    Typography, Collapse, Menu, MenuItem,
+    Typography,
 } from '@mui/material';
 import MenuIcon from "@mui/icons-material/Menu";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import Logo from '../assets/Logo.png';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ProfileIcon from '../assets/ProfileIcon.png';
 import Logout from '../assets/Logout.png';
 
 const Navbar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [drawerPackagesOpen, setDrawerPackagesOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -33,47 +30,15 @@ const Navbar = () => {
         setDrawerOpen(open);
     };
 
-    const handleDrawerPackagesClick = () => {
-        setDrawerPackagesOpen(!drawerPackagesOpen);
-    };
-
-    const handlePackagesClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handlePackagesClose = () => {
-        setAnchorEl(null);
-    };
-
     const userName = localStorage.getItem("userName");
 
     const menuItems = [
         {label: "HOME", to: "/home"},
         {label: "A/L STREAM", to: "/home/stream"},
         {label: "UNIVERSITIES", to: "/home/universities"},
-        {label: "COURSES", to: "/home/courses", hasDropdown: true},
+        {label: "TESTIMONIALS", to: "/home/testimonials"},
         {label: "CONTACT US", to: "/home/contact-us"},
     ];
-
-    const packageItems = [
-        {name: "After O/L", path: 'courses'},
-        {name: "After A/L", path: 'courses'},
-    ];
-
-    const menuStyles = {
-        paper: {
-            backgroundColor: 'black',
-        },
-    };
-
-    const menuItemStyles = {
-        root: {
-            color: 'white',
-            '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            },
-        },
-    };
 
     const drawerList = () => (
         <Box
@@ -85,7 +50,7 @@ const Navbar = () => {
                     <React.Fragment key={index}>
                         <ListItem
                             button
-                            onClick={item.hasDropdown ? handleDrawerPackagesClick : () => {
+                            onClick={() => {
                                 navigate(item.to);
                                 setDrawerOpen(false);
                             }}
@@ -110,27 +75,8 @@ const Navbar = () => {
                                     }
                                 }}
                             />
-                            {item.hasDropdown && (drawerPackagesOpen ? <ArrowDropDownIcon/> : <ArrowRightIcon/>)}
+                            <ArrowRightIcon/>
                         </ListItem>
-                        {item.hasDropdown && (
-                            <Collapse in={drawerPackagesOpen} timeout="auto" unmountOnExit>
-                                <List component="div" disablePadding>
-                                    {packageItems.map((packageItem, packageIndex) => (
-                                        <ListItem
-                                            button
-                                            key={packageIndex}
-                                            sx={{pl: 4}}
-                                            onClick={() => {
-                                                navigate(packageItem.path);
-                                                setDrawerOpen(false);
-                                            }}
-                                        >
-                                            <ListItemText primary={packageItem.name}/>
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Collapse>
-                        )}
                     </React.Fragment>
                 ))}
             </List>
@@ -154,9 +100,9 @@ const Navbar = () => {
                         <React.Fragment key={index}>
                             <Button
                                 color="inherit"
-                                onClick={item.hasDropdown ? handlePackagesClick : () => navigate(item.to)}
-                                component={item.hasDropdown ? 'div' : Link}
-                                to={item.hasDropdown ? undefined : item.to}
+                                onClick={() => navigate(item.to)}
+                                component={Link}
+                                to={item.to}
                                 sx={{
                                     color: "black",
                                     position: 'relative',
@@ -182,27 +128,7 @@ const Navbar = () => {
                                 <Typography sx={{fontWeight: 600, fontSize: 16, fontFamily: 'Poppins, sans-serif',}}>
                                     {item.label}
                                 </Typography>
-                                {item.hasDropdown && <ArrowDropDownIcon/>}
                             </Button>
-                            {item.hasDropdown && (
-                                <Menu
-                                    anchorEl={anchorEl}
-                                    open={Boolean(anchorEl)}
-                                    onClose={handlePackagesClose}
-                                    PaperProps={{
-                                        sx: menuStyles.paper
-                                    }}
-                                >
-                                    {packageItems?.map((packageItem, packageIndex) => (
-                                        <MenuItem key={packageIndex} onClick={() => {
-                                            navigate(packageItem.path);
-                                            handlePackagesClose();
-                                        }} sx={menuItemStyles.root}>
-                                            {packageItem.name}
-                                        </MenuItem>
-                                    ))}
-                                </Menu>
-                            )}
                         </React.Fragment>
                     ))}
                 </Box>

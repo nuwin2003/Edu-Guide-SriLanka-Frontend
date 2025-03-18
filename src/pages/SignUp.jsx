@@ -28,16 +28,14 @@ const SignUp = () => {
             return;
         }
 
-        const basePayload = {
+        const userDTO = {
             userName: formData.userName,
             email: formData.email,
             password: formData.password
         };
 
-        let finalPayload = {userDTO: basePayload};
-
         try {
-            const response = await userServices.signUp(finalPayload);
+            const response = await userServices.signUp(userDTO);
             console.log("Sign up response:", response);
 
             if (response?.status === "success") {

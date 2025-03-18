@@ -71,15 +71,15 @@ const Login = () => {
 
             const response = await userServices.signIn(userDTO);
             console.log("response : ", response);
-            if(response.status === 'success') {
+            if (response?.status === 'success') {
                 authService.setToken(response.token);
                 toast.success(response.message);
 
-                localStorage.setItem('userId', response?.userId);
-                localStorage.setItem('userName', response?.userName);
+                localStorage.setItem('userId', response.userId);
+                localStorage.setItem('userName', response.userName);
                 navigate('/home');
             } else {
-                 toast.error(response.message);
+                toast.error(response?.message || "An unexpected error occurred.");
             }
 
         } catch (error) {

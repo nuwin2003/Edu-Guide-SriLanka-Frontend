@@ -17,18 +17,32 @@ const userService = {
             return response.data;
         } catch (error) {
             console.error("Error on sign-in", error);
-            throw error;
+            if (error.response) {
+                return error.response.data;
+            } else {
+                return { status: 'failure', message: "An unexpected error occurred." };
+            }
         }
     },
 
     // Sign Up
     signUp: async (userDTO) => {
         try {
-            const response = await axiosInstance.post('/sign-up', userDTO);
+            const apiRequest = {
+                userName: userDTO.userName,
+                email: userDTO.email,
+                password: userDTO.password
+            };
+            console.log(apiRequest);
+            const response = await axiosInstance.post('/sign-up', apiRequest);
             return response.data;
         } catch (error) {
             console.error("Error on sign-up", error);
-            throw error;
+            if (error.response) {
+                return error.response.data;
+            } else {
+                return { status: 'failure', message: "An unexpected error occurred." };
+            }
         }
     },
 };
