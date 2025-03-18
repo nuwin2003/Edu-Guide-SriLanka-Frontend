@@ -6,7 +6,7 @@ const AboutUs = () => {
     return (
         <Grid container sx={{display: 'flex', alignItems: 'center'}}>
             <Grid item xs={12} md={6} sx={{display: 'flex', justifyContent: 'center'}}>
-                <Box component='img' src={AboutUsImg} width={500} height={550}/>
+                <Box component='img' src={AboutUsImg} width={570} height={550}/>
             </Grid>
             <Grid item xs={12} md={6}>
                 <Box sx={{display: 'flex', flexDirection: 'column'}}>

@@ -33,19 +33,22 @@ const InitialView = () => {
                                 Your Dream Career
                             </Typography>
                         </Box>
-                        <Typography sx={{color: "#757575", fontSize: 20, fontWeight: 500}}>
-                            Explore a wide range of universities and courses that align with your passion and career
-                            goals. Let us guide you to make the best educational choices and create a brighter future.
+                        <Typography sx={{color: "#757575", fontSize: 20, fontWeight: 600}}>
+                            Explore a wide range of universities and courses and A/L stream that align with your passion
+                            and career goals. Let us guide you to make the best educational choices and create a
+                            brighter future.
                         </Typography>
                         <Button sx={{
-                            width: 100,
+                            width: 180,
+                            height: 40,
+                            borderRadius: 2,
                             backgroundColor: '#7095DE',
                             color: '#FFFFFF',
                             '&:hover': {backgroundColor: '#7095AF'}
                         }}>
-                            <Typography sx={{fontWeight: 600}} onClick={() => {
+                            <Typography sx={{fontWeight: 600, textTransform: 'none'}} onClick={() => {
                                 navigate("/home/contact-us");
-                            }}>LET'S TALK</Typography>
+                            }}>Choose your Path</Typography>
                         </Button>
                     </Box>
                 </Grid>
