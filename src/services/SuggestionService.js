@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://127.0.0.1:5000";  // Ensure this points to your Flask backend
+const API_URL = "http://127.0.0.1:5002";  // Ensure this points to your Flask backend
 
 const SuggestionService = {
     suggestStream: async (userResponseStreams) => {

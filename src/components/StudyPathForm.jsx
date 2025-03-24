@@ -20,14 +20,15 @@ import StreamResultDialog from "./StreamResultDialog.jsx";
 const questions = [
     { id: 1, text: "Enter your O/L Mathematics Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
     { id: 2, text: "Enter your O/L Science Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
-    { id: 3, text: "Enter your O/L Commerce Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
+    { id: 3, text: "Enter your O/L Religion Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
     { id: 4, text: "Enter your O/L English Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
-    { id: 5, text: "Enter your O/L IT Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
-    { id: 6, text: "Enter your Favorite Subject:", type: "text" },
-    { id: 7, text: "Enter your Career Interest:", type: "text" },
-    { id: 8, text: "Enter your Logical Thinking Score (1-10):", type: "slider", min: 1, max: 10 },
-    { id: 9, text: "Enter your Analytical Skills Score (1-10):", type: "slider", min: 1, max: 10 },
-    { id: 10, text: "Enter your Creativity Level:", type: "select", options: ["Low", "Medium", "High"] }
+    { id: 5, text: "Enter your O/L Sinhala or Tamil Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
+    { id: 6, text: "Enter your O/L History Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
+    { id: 7, text: "Enter your O/L Basket 1 Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
+    { id: 8, text: "Enter your O/L Basket 2 Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
+    { id: 9, text: "Enter your O/L Basket 3 Grade:", type: "select", options: ["A", "B", "C", "S", "F"] },
+    { id: 10, text: "Enter your Favorite Subject:", type: "text" },
+    { id: 11, text: "Enter your Career Interest:", type: "text" },
 ];
 
 const StudyPathForm = () => {
@@ -41,6 +42,15 @@ const StudyPathForm = () => {
         }), {})
     });
 
+    const gradeMapping = {
+        'A': 5,
+        'B': 4,
+        'C': 3,
+        'D': 2,
+        'E': 1,
+        'F': 0
+    };
+
     const onSubmit = async (data) => {
         const unanswered = questions.some((q) => data[`question${q.id}`] === '');
         if (unanswered) {
@@ -49,16 +59,17 @@ const StudyPathForm = () => {
         }
 
         const formattedData = {
-            'O/L_Mathematics_Grade': data.question1,
-            'O/L_Science_Grade': data.question2,
-            'O/L_Commerce_Grade': data.question3,
-            'O/L_English_Grade': data.question4,
-            'O/L_IT_Grade': data.question5,
-            'Favorite_Subject': data.question6,
-            'Career_Interest': data.question7,
-            'Logical_Thinking_Score': data.question8,
-            'Analytical_Skills_Score': data.question9,
-            'Creativity_Level': data.question10
+            'Maths': gradeMapping[data.question1] ?? data.question1,
+            'Science': gradeMapping[data.question2] ?? data.question2,
+            'Religion': gradeMapping[data.question3] ?? data.question3,
+            'English': gradeMapping[data.question4] ?? data.question4,
+            'Sinhala or Tamil': gradeMapping[data.question5] ?? data.question5,
+            'History': gradeMapping[data.question6] ?? data.question6,
+            'Basket 1': gradeMapping[data.question7] ?? data.question7,
+            'Basket 2': gradeMapping[data.question8] ?? data.question8,
+            'Basket 3': gradeMapping[data.question9] ?? data.question9,
+            'Favorite Subject': data.question10,
+            'Career': data.question11,
         };
 
         console.log('Formatted Data Sent to API:', formattedData);
