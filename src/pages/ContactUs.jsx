@@ -1,9 +1,6 @@
 import React, {useRef, useState} from 'react';
-import {Box, Button, Grid, Stack, TextField, Typography} from "@mui/material";
+import {Box, Button, Grid, TextField, Typography} from "@mui/material";
 import ContactUsImg from '../assets/ContactUsImg.png';
-import Phone from '../assets/contactUs/Phone.png';
-import Fax from '../assets/contactUs/Fax.png';
-import Email from '../assets/contactUs/Email.png';
 import {toast} from 'react-toastify';
 import emailjs from '@emailjs/browser';
 
@@ -70,123 +67,98 @@ const ContactUs = () => {
     };
 
     return (
-        <Grid container mt={5}>
-            <Grid item xs={12} md={6} p={5} pl={10}>
-                <Box>
-                    <Box sx={{display: 'flex', gap: 0.5}}>
-                        <Typography sx={{fontWeight: 700, color: '#000000', fontSize: 50}}>
-                            Get in
-                        </Typography>
-                        <Typography sx={{fontWeight: 700, color: '#3E70D0', fontSize: 50}}>
-                            Touch
-                        </Typography>
-                    </Box>
-
-                    <Typography sx={{maxWidth: 525, color: '#757575', fontSize: 16, fontWeight: 500}}>
-                        Get in Touch: We're Ready to Assist You! Whether you have questions or need guidance, our
-                        dedicated team is here to support you on your educational journey!
-                    </Typography>
-                </Box>
-                <Box component="form" ref={form} onSubmit={sendEmail} sx={{
+        <Grid container sx={{height: '100vh'}}>
+            <Grid item xs={12} md={6}
+                  sx={{display: 'flex', justifyContent: 'left', position: 'relative', height: '100%'}}>
+                <Box sx={{
+                    position: 'absolute',
+                    width: {sm: '100%', xs: '100%'},
+                    height: '100%',
+                    left: {sm: '-3%', xs: '-1%'},
+                    top: '-3%',
+                    zIndex: 1,
+                }}/>
+                <Box component="img" src={ContactUsImg} alt="Excited professional" sx={{
                     display: 'flex',
-                    justifyContent: {lg: 'left', xs: 'center'},
-                    flexDirection: 'column',
-                    gap: 2,
-                    backgroundColor: 'white',
-                    width: {md: 500, xs: '100%'},
-                    p: 2,
-                    borderRadius: '10px',
+                    justifyContent: 'center',
+                    width: {lg: 653, sm: 400, xs: '100%'},
+                    height: 'auto',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    zIndex: 2,
                     position: 'relative',
-                }}>
-                    <TextField
-                        fullWidth
-                        label="Name"
-                        variant="outlined"
-                        size='small'
-                        name="from_name"
-                        value={formData.from_name}
-                        onChange={handleInputChange}
-                        error={Boolean(errors.from_name)}
-                        helperText={errors.from_name}
-                    />
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        variant="outlined"
-                        size='small'
-                        name="from_email"
-                        value={formData.from_email}
-                        onChange={handleInputChange}
-                        error={Boolean(errors.from_email)}
-                        helperText={errors.from_email}
-                    />
-                    <TextField
-                        fullWidth
-                        label="Message"
-                        variant="outlined"
-                        multiline
-                        rows={4}
-                        size='small'
-                        name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        error={Boolean(errors.message)}
-                        helperText={errors.message}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                        sx={{
-                            alignSelf: 'flex-start', backgroundColor: '#3E70D0',
-                            '&:hover': {
-                                backgroundColor: '#3E70D0',
-                            },
-                        }}
-                    >
-                        SEND
-                    </Button>
-                </Box>
-
-                <Box sx={{display: 'flex', gap: 4, m: 2}}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                        <Box component='img' src={Phone} width={28} height={28}/>
-                        <Stack>
-                            <Typography sx={{fontSize: 13, fontWeight: 600}}>
-                                PHONE
-                            </Typography>
-                            <Typography sx={{fontSize: 13, color: '#757575'}}>
-                                03 5432 1234
-                            </Typography>
-                        </Stack>
-                    </Box>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                        <Box component='img' src={Fax} width={28} height={28}/>
-                        <Stack>
-                            <Typography sx={{fontSize: 13, fontWeight: 600}}>
-                                FAX
-                            </Typography>
-                            <Typography sx={{fontSize: 13, color: '#757575'}}>
-                                03 5432 1234
-                            </Typography>
-                        </Stack>
-                    </Box>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                        <Box component='img' src={Email} width={28} height={28}/>
-                        <Stack>
-                            <Typography sx={{fontSize: 13, fontWeight: 600}}>
-                                EMAIL
-                            </Typography>
-                            <Typography sx={{fontSize: 13, color: '#757575'}}>
-                                info@EduConnect.com
-                            </Typography>
-                        </Stack>
-                    </Box>
-                </Box>
+                }}/>
             </Grid>
-            <Grid item xs={12} md={6}>
-                <Box component='img' src={ContactUsImg} width={680} height={570}/>
+
+            <Grid item xs={12} md={6}
+                  sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+                <Box sx={{
+                    borderColor: '#D8D8D8',
+                    borderWidth: 3,
+                    borderStyle: 'solid',
+                    padding: 4,
+                    borderRadius: 2,
+                    width: '100%',
+                    maxWidth: 500,
+                    maxHeight: '90vh',
+                    overflowY: 'auto',
+                }}>
+                    <Typography variant="h4" component="h1" align="left" gutterBottom
+                                sx={{fontWeight: 600, color: '#0086C0'}}>
+                        CONTACT US
+                    </Typography>
+                    <Typography variant="body2" align="left" sx={{mb: 3, color: '#757575', fontWeight: 500}}>
+                        Get in Touch: We're Here to Help! Have questions? Our team is ready to support your educational
+                        journey!
+                    </Typography>
+                    <Box component="form" ref={form} onSubmit={sendEmail}
+                         sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Name"
+                            name="from_name"
+                            value={formData.from_name}
+                            onChange={handleInputChange}
+                            sx={{backgroundColor: '#FFFFFF'}}
+                        />
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Email Address"
+                            name="from_email"
+                            value={formData.from_email}
+                            onChange={handleInputChange}
+                            sx={{backgroundColor: '#FFFFFF'}}
+                        />
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Message"
+                            name="message"
+                            value={formData.message}
+                            onChange={handleInputChange}
+                            multiline
+                            rows={5}
+                            sx={{backgroundColor: '#FFFFFF'}}
+                        />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            size="large"
+                            sx={{
+                                backgroundColor: '#0086C0',
+                                color: 'white',
+                                '&:hover': {backgroundColor: '#0086F0'},
+                                // textTransform: 'none',
+                                py: 1.5
+                            }}
+                        >
+                            Submit
+                        </Button>
+                    </Box>
+                </Box>
             </Grid>
         </Grid>
     );
