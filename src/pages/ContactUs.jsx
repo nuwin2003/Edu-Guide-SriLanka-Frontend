@@ -6,7 +6,7 @@ import emailjs from '@emailjs/browser';
 
 const ContactUs = () => {
 
-    const form = useRef();
+    const form = useRef(null);
     const [formData, setFormData] = useState({
         from_name: '',
         from_email: '',
@@ -76,7 +76,6 @@ const ContactUs = () => {
                     height: '100%',
                     left: {sm: '-3%', xs: '-1%'},
                     top: '-3%',
-                    zIndex: 1,
                 }}/>
                 <Box component="img" src={ContactUsImg} alt="Excited professional" sx={{
                     display: 'flex',
@@ -85,7 +84,6 @@ const ContactUs = () => {
                     height: 'auto',
                     maxHeight: '100%',
                     objectFit: 'contain',
-                    zIndex: 2,
                     position: 'relative',
                 }}/>
             </Grid>
@@ -121,6 +119,7 @@ const ContactUs = () => {
                             value={formData.from_name}
                             onChange={handleInputChange}
                             sx={{backgroundColor: '#FFFFFF'}}
+                            helperText={errors.from_name}
                         />
                         <TextField
                             fullWidth
@@ -130,6 +129,7 @@ const ContactUs = () => {
                             value={formData.from_email}
                             onChange={handleInputChange}
                             sx={{backgroundColor: '#FFFFFF'}}
+                            helperText={errors.from_email}
                         />
                         <TextField
                             fullWidth
@@ -141,6 +141,7 @@ const ContactUs = () => {
                             multiline
                             rows={5}
                             sx={{backgroundColor: '#FFFFFF'}}
+                            helperText={errors.message}
                         />
                         <Button
                             type="submit"
