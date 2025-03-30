@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 import {
     Box,
     Typography,
@@ -12,7 +12,10 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import ChatBotImg from '../assets/ChatBotImg.png';
-import chatService from "../services/ChatService.js";
+import axios from "axios";
+
+// Replace this with your real Flask or ngrok URL
+const baseURL = "http://127.0.0.1:5001";
 
 const Universities = () => {
     const [messages, setMessages] = useState([
@@ -21,59 +24,245 @@ const Universities = () => {
             content: 'Hello, My Name is EDUGUIDE, How can I assist you?'
         }
     ]);
-    const [inputValue, setInputValue] = useState('');
+    const [inputMessage, setInputMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
-    };
+    // We'll store the user's answers in local state
+    const [skillInput, setSkillInput] = useState("");
+    const [govInterest, setGovInterest] = useState("");
+    const [zScore, setZScore] = useState("");
+    const [district, setDistrict] = useState("");
+    const [alStream, setAlStream] = useState("");
 
+    // Step in the conversation flow: 0 to final
+    // step 0 => prompt for skill_input
+    // step 1 => prompt for gov_interest
+    // (If "no", skip to final rec)
+    // step 2 => prompt for z_score
+    // step 3 => prompt for district
+    // step 4 => prompt for al_stream
+    // step 5 => we have all data => do server call
+    const [step, setStep] = useState(0);
+
+    // Scroll to bottom when messages update
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
-    const handleSendMessage = async () => {
-        if (!inputValue.trim()) return;
+    // On mount: ask the first question
+    useEffect(() => {
+        // Only if no messages are present, to avoid double prints in dev mode
+        if (messages.length === 0) {
+            sendBotMessage("Hi! Let's get started. What skill area are you interested in?");
+        }
+    }, [messages]);
 
-        // Add user message
-        const userMessage = {
-            type: 'user',
-            content: inputValue
-        };
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({behavior: "auto"});
+    };
 
-        setMessages(prev => [...prev, userMessage]);
+    // Helper to append a message from the "assistant"
+    const sendBotMessage = (text) => {
+        const botMsg = {role: "assistant", content: text};
+        setMessages((prev) => [...prev, botMsg]);
+    };
+
+    // When user hits "Send"
+    const sendMessage = async () => {
+        if (!inputMessage.trim()) return;
+        // Add user’s message to chat
+        const userMsg = {role: "user", content: inputMessage.trim()};
+        setMessages((prev) => [...prev, userMsg]);
         setIsLoading(true);
 
-        try {
-            // Simulated API call - replace with actual API integration
-            const response = await chatService.chat(inputValue);
+        // Grab user input from the text area
+        const userReply = inputMessage.trim();
 
-            // Add bot response
-            const botMessage = {
-                type: 'bot',
-                content: response
+        // Clear input
+        setInputMessage("");
+
+        // We'll handle the logic based on current step
+        switch (step) {
+            case 0:
+                // skill_input
+                setSkillInput(userReply);
+                setTimeout(() => {
+                    sendBotMessage("Are you interested in government universities? (yes/no)");
+                    setStep(1);
+                    setIsLoading(false);
+                }, 500);
+                break;
+
+            case 1:
+                // gov_interest
+                setGovInterest(userReply);
+                if (userReply.toLowerCase().includes("yes")) {
+                    // If yes => ask for z-score
+                    setTimeout(() => {
+                        sendBotMessage("Please enter your Z-score:");
+                        setStep(2);
+                        setIsLoading(false);
+                    }, 500);
+                } else {
+                    // If "no", skip everything & finalize
+                    setTimeout(() => {
+                        sendBotMessage("Alright, skipping government unis. Let me process your request...");
+                        setStep(5); // jump directly to final
+                        handleFinalRecommendation();
+                    }, 500);
+                }
+                break;
+
+            case 2:
+                // z_score
+                setZScore(userReply);
+                // Next => ask district
+                setTimeout(() => {
+                    sendBotMessage("Got it. Please enter your district:");
+                    setStep(3);
+                    setIsLoading(false);
+                }, 500);
+                break;
+
+            case 3:
+                // district
+                setDistrict(userReply);
+                // Next => ask al_stream
+                setTimeout(() => {
+                    sendBotMessage("Finally, what's your A-Level stream?");
+                    setStep(4);
+                    setIsLoading(false);
+                }, 500);
+                break;
+
+            case 4:
+                // al_stream
+                setAlStream(userReply);
+                // Next => we have all data, do server call
+                setTimeout(() => {
+                    sendBotMessage("Great! Let me process your request...");
+                    setStep(5);
+                    handleFinalRecommendation();
+                }, 500);
+                break;
+
+            default:
+                // If we are beyond step 4, do nothing
+                setIsLoading(false);
+                break;
+        }
+    };
+
+    // Once we have skillInput, govInterest, (optional) zScore, district, alStream => call the Flask endpoint
+    const handleFinalRecommendation = async () => {
+        setIsLoading(true);
+        try {
+            // Build the payload
+            const payload = {
+                skill_input: skillInput,
+                gov_interest: govInterest,
+                z_score: zScore ? parseFloat(zScore) : undefined,
+                district,
+                al_stream: alStream,
             };
 
-            setMessages(prev => [...prev, botMessage]);
+            // Call the server
+            const response = await axios.post(`${baseURL}/recommend`, payload, {
+                headers: {
+                    "Content-Type": "application/json",
+                    // Optionally skip the ngrok warning
+                    "ngrok-skip-browser-warning": "1",
+                },
+            });
+
+            const responseData = response.data;
+
+            // Let's build a user-friendly final message
+            let finalMessage = `Here are your recommendations:\n\n`;
+
+            // 1) matched_career, matched_score, matched_skill_text
+            const matchedCareer = responseData.matched_career || "N/A";
+            const matchedScore = responseData.matched_score || 0;
+            const matchedSkillText = responseData.matched_skill_text || "N/A";
+            finalMessage += `**Matched Career**: ${matchedCareer}\n`;
+            finalMessage += `**Matched Score**: ${matchedScore}\n`;
+            finalMessage += `**Skill Text**: ${matchedSkillText}\n\n`;
+
+            // 2) Private
+            if (responseData.private_universities && responseData.private_universities.length > 0) {
+                finalMessage += `**Private Universities**:\n`;
+                responseData.private_universities.forEach((uni, index) => {
+                    finalMessage += `${index + 1}) **${uni.University}**\n`;
+                    finalMessage += `   Degree: ${uni.Degree}\n`;
+                    if (uni.Link) finalMessage += `   Link: ${uni.Link}\n`;
+                    if (uni.Similarity_Score !== undefined) {
+                        finalMessage += `   Similarity: ${uni.Similarity_Score}\n`;
+                    }
+                    finalMessage += "\n";
+                });
+            } else {
+                finalMessage += "No private university recommendations.\n\n";
+            }
+
+            // 3) Government
+            if (responseData.government_universities) {
+                if (Array.isArray(responseData.government_universities)) {
+                    if (responseData.government_universities.length > 0) {
+                        finalMessage += `**Government Universities**:\n`;
+                        responseData.government_universities.forEach((uni, idx) => {
+                            finalMessage += `${idx + 1}) **${uni.University}**\n`;
+                            finalMessage += `   Degree: ${uni.Degree}\n`;
+                            if (uni.Z_score_Program !== undefined) {
+                                finalMessage += `   Z-Score Program: ${uni.Z_score_Program}\n`;
+                            }
+                            if (uni.Stream) finalMessage += `   Stream: ${uni.Stream}\n`;
+                            if (uni.Similarity_Score !== undefined) {
+                                finalMessage += `   Similarity: ${uni.Similarity_Score}\n`;
+                            }
+                            finalMessage += "\n";
+                        });
+                    } else {
+                        finalMessage += "No government university recommendations.\n";
+                    }
+                } else {
+                    // Not an array
+                    finalMessage += `Government data: ${JSON.stringify(responseData.government_universities, null, 2)}\n`;
+                }
+            }
+
+            const finalMsg = {role: "assistant", content: finalMessage};
+            setMessages((prev) => [...prev, finalMsg]);
         } catch (error) {
-            console.error('Error:', error);
-            setMessages(prev => [...prev, {
-                type: 'error',
-                content: 'Sorry, I encountered an error. Please try again.'
-            }]);
+            console.error("Error in final recommendation:", error);
+            const errMsg = {
+                role: "assistant",
+                content: "⚠️ An error occurred: " + error.toString(),
+            };
+            setMessages((prev) => [...prev, errMsg]);
         } finally {
             setIsLoading(false);
-            setInputValue('');
         }
     };
 
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
-            handleSendMessage();
-        }
-    };
+    // Keep your formatMessageContent function
+    function formatMessageContent(content) {
+        const sections = content.split(/(```[\s\S]*?```|`[\s\S]*?`)/g);
+        return sections
+            .map((section) => {
+                if (section.startsWith("```") && section.endsWith("```")) {
+                    section = section.split("\n").slice(1).join("\n");
+                    const code = section.substring(0, section.length - 3);
+                    return `<pre><code class="code-block">${code}</code></pre>`;
+                } else if (section.startsWith("`") && section.endsWith("`")) {
+                    const code = section.substring(1, section.length - 1);
+                    return `<code class="inline-code">${code}</code>`;
+                } else {
+                    return section.replace(/\n/g, "<br>");
+                }
+            })
+            .join("");
+    }
 
     return (
         <Grid container spacing={2} sx={{mb: 8, mt: 5}}>
@@ -104,7 +293,7 @@ const Universities = () => {
                         EduGuide : Your Learning Companion
                     </Typography>
 
-                    <Box sx={{flexGrow: 1, overflow: "auto", mb: 2}}>
+                    <Box sx={{ flexGrow: 1, overflow: "auto", mb: 2 }}>
                         {messages.map((message, index) => (
                             <Box
                                 key={index}
@@ -125,7 +314,7 @@ const Universities = () => {
                                     {message.type === 'bot' && (
                                         <Avatar
                                             src={ChatBotImg}
-                                            sx={{width: 40, height: 40, mx: 1}}
+                                            sx={{ width: 40, height: 40, mx: 1 }}
                                         />
                                     )}
                                     <Paper
@@ -140,14 +329,14 @@ const Universities = () => {
                                             borderRadius: 2,
                                         }}
                                     >
-                                        <Typography sx={{whiteSpace: 'pre-wrap'}}>
-                                            {message.content}
+                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                            {formatMessageContent(message.content)}
                                         </Typography>
                                     </Paper>
                                 </Box>
                             </Box>
                         ))}
-                        {isLoading && (
+                    {isLoading && (
                             <Box sx={{display: 'flex', justifyContent: 'flex-start', mb: 2}}>
                                 <CircularProgress size={20}/>
                             </Box>
@@ -159,10 +348,17 @@ const Universities = () => {
                         <TextField
                             fullWidth
                             variant="outlined"
-                            placeholder="Type your message..."
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyPress={handleKeyPress}
+                            placeholder="Type a message"
+                            value={inputMessage}
+                            onChange={(e) => setInputMessage(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    if (inputMessage) {
+                                        sendMessage();
+                                    }
+                                }
+                            }}
                             sx={{
                                 backgroundColor: "#FFFFFF",
                                 '& .MuiOutlinedInput-root': {
@@ -172,8 +368,10 @@ const Universities = () => {
                         />
                         <IconButton
                             color="primary"
-                            onClick={handleSendMessage}
-                            disabled={isLoading || !inputValue.trim()}
+                            onClick={() => {
+                                sendMessage()
+                            }}
+                            disabled={isLoading || !inputMessage.trim()}
                             sx={{
                                 backgroundColor: '#007BFF',
                                 color: '#FFFFFF',
