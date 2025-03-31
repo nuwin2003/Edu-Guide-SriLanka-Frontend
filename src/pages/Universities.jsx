@@ -15,7 +15,7 @@ import ChatBotImg from '../assets/ChatBotImg.png';
 import axios from "axios";
 
 // Replace this with your real Flask or ngrok URL
-const baseURL = "http://localhost:";
+const baseURL = "http://localhost:5001";
 
 const Universities = () => {
     const [messages, setMessages] = useState([
@@ -64,15 +64,15 @@ const Universities = () => {
 
     // Helper to append a message from the "assistant"
     const sendBotMessage = (text) => {
-        const botMsg = {role: "assistant", content: text};
+        const botMsg = {type: "bot", content: text}; // Changed from role to type
         setMessages((prev) => [...prev, botMsg]);
     };
 
     // When user hits "Send"
     const sendMessage = async () => {
         if (!inputMessage.trim()) return;
-        // Add user’s message to chat
-        const userMsg = {role: "user", content: inputMessage.trim()};
+        // Add user's message to chat
+        const userMsg = {type: "user", content: inputMessage.trim()}; // Changed from role to type
         setMessages((prev) => [...prev, userMsg]);
         setIsLoading(true);
 
@@ -231,12 +231,12 @@ const Universities = () => {
                 }
             }
 
-            const finalMsg = {role: "assistant", content: finalMessage};
+            const finalMsg = {type: "bot", content: finalMessage}; // Changed from role to type
             setMessages((prev) => [...prev, finalMsg]);
         } catch (error) {
             console.error("Error in final recommendation:", error);
             const errMsg = {
-                role: "assistant",
+                type: "error", // Changed from role to type
                 content: "⚠️ An error occurred: " + error.toString(),
             };
             setMessages((prev) => [...prev, errMsg]);
@@ -247,6 +247,7 @@ const Universities = () => {
 
     // Keep your formatMessageContent function
     function formatMessageContent(content) {
+        if (!content) return '';
         const sections = content.split(/(```[\s\S]*?```|`[\s\S]*?`)/g);
         return sections
             .map((section) => {
@@ -293,7 +294,7 @@ const Universities = () => {
                         EduGuide : Your Learning Companion
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, overflow: "auto", mb: 2 }}>
+                    <Box sx={{flexGrow: 1, overflow: "auto", mb: 2}}>
                         {messages.map((message, index) => (
                             <Box
                                 key={index}
@@ -314,7 +315,7 @@ const Universities = () => {
                                     {message.type === 'bot' && (
                                         <Avatar
                                             src={ChatBotImg}
-                                            sx={{ width: 40, height: 40, mx: 1 }}
+                                            sx={{width: 40, height: 40, mx: 1}}
                                         />
                                     )}
                                     <Paper
@@ -329,14 +330,14 @@ const Universities = () => {
                                             borderRadius: 2,
                                         }}
                                     >
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                        <Typography sx={{whiteSpace: 'pre-wrap'}}>
                                             {formatMessageContent(message.content)}
                                         </Typography>
                                     </Paper>
                                 </Box>
                             </Box>
                         ))}
-                    {isLoading && (
+                        {isLoading && (
                             <Box sx={{display: 'flex', justifyContent: 'flex-start', mb: 2}}>
                                 <CircularProgress size={20}/>
                             </Box>
@@ -358,6 +359,11 @@ const Universities = () => {
                                         sendMessage();
                                     }
                                 }
+                            }}
+                            // Add these properties to prevent auto-focus
+                            autoFocus={false}
+                            inputProps={{
+                                autoFocus: false,
                             }}
                             sx={{
                                 backgroundColor: "#FFFFFF",
