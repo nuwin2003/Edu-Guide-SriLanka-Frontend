@@ -105,14 +105,13 @@ const Footer = () => {
                     <Box sx={{display: 'flex', mb: 1}} onClick={() => window.location.href = 'tel:+61 450 225 194'}>
                         <PhoneIcon sx={{mr: 1}}/>
                         <Typography
-                            sx={{mb: 1, fontSize: 14, fontWeight: 500, color: 'white', textDecoration: 'underline'}}>+61
-                            0758353569</Typography>
+                            sx={{mb: 1, fontSize: 14, fontWeight: 500, color: 'white', textDecoration: 'underline'}}>00989239390</Typography>
                     </Box>
                     <Box sx={{display: 'flex', mb: 1}}>
                         <EmailIcon sx={{mr: 1}}/>
-                        <Link href="mailto:educonnect@gmail.com" color="inherit"
+                        <Link href="mailto:eduguide@gmail.com" color="inherit"
                               sx={{mb: 1, fontSize: 14, fontWeight: 500}}>
-                            educonnect@gmail.com
+                            eduguide@gmail.com
                         </Link>
                     </Box>
                 </Grid>
