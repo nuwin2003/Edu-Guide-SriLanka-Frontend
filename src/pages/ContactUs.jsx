@@ -67,7 +67,7 @@ const ContactUs = () => {
     };
 
     return (
-        <Grid container sx={{height: '100vh'}}>
+        <Grid container sx={{height: '95vh'}}>
             <Grid item xs={12} md={6}
                   sx={{display: 'flex', justifyContent: 'left', position: 'relative', height: '100%'}}>
                 <Box sx={{

@@ -15,13 +15,17 @@ import ChatBotImg from '../assets/ChatBotImg.png';
 import axios from "axios";
 
 // Replace this with your real Flask or ngrok URL
-const baseURL = "http://localhost:5001";
+const baseURL = "http://127.0.0.1:5001";
 
 const Universities = () => {
     const [messages, setMessages] = useState([
         {
             type: 'bot',
             content: 'Hello, My Name is EDUGUIDE, How can I assist you?'
+        },
+        {
+            type: 'bot',
+            content: "Hi! Let's get started. What skill area are you interested in?"
         }
     ]);
     const [inputMessage, setInputMessage] = useState("");
@@ -45,21 +49,20 @@ const Universities = () => {
     // step 5 => we have all data => do server call
     const [step, setStep] = useState(0);
 
-    // Scroll to bottom when messages update
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+    // Add state to track if it's the initial render
+    const [isInitialRender, setIsInitialRender] = useState(true);
 
-    // On mount: ask the first question
+    // Scroll to bottom only when new messages are added (not on initial render)
     useEffect(() => {
-        // Only if no messages are present, to avoid double prints in dev mode
-        if (messages.length === 0) {
-            sendBotMessage("Hi! Let's get started. What skill area are you interested in?");
+        if (!isInitialRender) {
+            scrollToBottom();
+        } else {
+            setIsInitialRender(false);
         }
     }, [messages]);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({behavior: "auto"});
+        messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
     };
 
     // Helper to append a message from the "assistant"
@@ -281,7 +284,7 @@ const Universities = () => {
                 <Paper
                     elevation={3}
                     sx={{
-                        width: 500,
+                        width: 600,
                         height: 500,
                         backgroundColor: "#F3F3F3",
                         p: 4,

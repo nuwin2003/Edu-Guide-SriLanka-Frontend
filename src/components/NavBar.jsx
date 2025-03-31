@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import MenuIcon from "@mui/icons-material/Menu";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import Logo from '../assets/Logo.png';
+import Logo from '../assets/EduGuide_Logo.png';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ProfileIcon from '../assets/ProfileIcon.png';
 import Logout from '../assets/Logout.png';
@@ -86,7 +86,7 @@ const Navbar = () => {
     return (
         <AppBar elevation={0} sx={{zIndex: 2, backgroundColor: '#FFFFFF'}}>
             <Toolbar sx={{justifyContent: "space-between"}}>
-                <Box component="img" src={Logo} alt="Logo" sx={{width: 72, height: 66, marginLeft: {sm: 10}}}/>
+                <Box component="img" src={Logo} alt="Logo" sx={{width: 180, height: 75, marginLeft: {sm: 10}}}/>
                 <Box
                     sx={{
                         display: {xs: "none", md: "flex"},
