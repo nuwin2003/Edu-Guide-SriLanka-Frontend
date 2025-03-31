@@ -15,7 +15,7 @@ import ChatBotImg from '../assets/ChatBotImg.png';
 import axios from "axios";
 
 // Replace this with your real Flask or ngrok URL
-const baseURL = "http://127.0.0.1:5001";
+const baseURL = "http://localhost:";
 
 const Universities = () => {
     const [messages, setMessages] = useState([

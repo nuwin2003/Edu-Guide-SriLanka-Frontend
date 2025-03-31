@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://127.0.0.1:5001";  // Correct Flask API URL
+const API_URL = "http://localhost:5001/";  // Correct Flask API URL
 
 const SuggestionService2 = {
     predictDegree: async (userResponseSkills) => {  // Fix function name

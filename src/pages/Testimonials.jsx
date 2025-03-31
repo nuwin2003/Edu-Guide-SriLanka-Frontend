@@ -3,6 +3,7 @@ import {Box, Grid, Typography} from "@mui/material";
 import Photo1 from '../assets/testimonials/Photo1.png';
 import Photo2 from '../assets/testimonials/Photo2.png';
 import Photo3 from '../assets/testimonials/Photo3.png';
+import VideoImg from '../assets/testimonials/VideoImg.png';
 import TestimonialsCard from "../components/TestimonialsCard.jsx";
 
 const Testimonials = () => {
@@ -34,6 +35,19 @@ const Testimonials = () => {
                     </Typography>
                     <Typography sx={{fontWeight: 600, fontSize: 30, color: '#7095DE'}}>
                         Testimonials
+                    </Typography>
+                </Box>
+            </Grid>
+            <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center', m: 2}}>
+                <Box component='img' src={VideoImg} width={1150} height={375} />
+            </Grid>
+            <Grid item xs={12}>
+                <Box sx={{mt: 5, mb: 2, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <Typography sx={{fontWeight: 600, fontSize: 25}}>
+                        Lorem Lipsum
+                    </Typography>
+                    <Typography sx={{color: '#757575', fontWeight: 550, fontSize: 15, maxWidth: 600}}>
+                        Lorem ipsum dolor sit amet consectetur. Volutpat ut gravida est viverra mauris donec convallis leo maecenas.
                     </Typography>
                 </Box>
             </Grid>
