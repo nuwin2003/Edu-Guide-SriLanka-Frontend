@@ -333,9 +333,8 @@ const Universities = () => {
                                             borderRadius: 2,
                                         }}
                                     >
-                                        <Typography sx={{whiteSpace: 'pre-wrap'}}>
-                                            {formatMessageContent(message.content)}
-                                        </Typography>
+                                        <Typography sx={{whiteSpace: 'pre-wrap'}}
+                                                    dangerouslySetInnerHTML={{__html: formatMessageContent(message.content)}}/>
                                     </Paper>
                                 </Box>
                             </Box>
